@@ -1,0 +1,11 @@
+.logo {
+    user-select: none;
+    span {
+        margin-right: 10px;
+        font-size: 30px;
+    }
+    h1 {
+        display: inline-block;
+        font-size: 30px;
+    }
+}
