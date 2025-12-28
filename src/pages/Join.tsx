@@ -4,6 +4,7 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui
 import { Input } from '@/components/ui/input.tsx';
 import Logo from '@/pages/Logo.tsx';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 
 type JoinFormValue = {
   name: string;
@@ -23,8 +24,10 @@ const Join = () => {
   });
   const { register } = method;
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     console.log('join data ::: ', method.getValues());
+    const response = await axios.get('http://localhost:8080/bplte/core/auth/test');
+    console.log('test ::: ', response);
   };
 
   return (
