@@ -2,18 +2,30 @@ import { Button } from '@/components/ui/button.tsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field.tsx';
 import { Input } from '@/components/ui/input.tsx';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import Logo from '@/pages/Logo.tsx';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { useState } from 'react';
 
 type JoinFormValue = {
-  name: string;
+  userId: string;
+  userName: string;
   email: string;
   password: string;
 };
 
 const initFormValue: JoinFormValue = {
-  name: '',
+  userId: '',
+  userName: '',
   email: '',
   password: '',
 };
@@ -23,15 +35,34 @@ const Join = () => {
     defaultValues: initFormValue,
   });
   const { register } = method;
+  const [alertOpen, setAlertOpen] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>('');
 
   const onSubmit = async () => {
-    console.log('join data ::: ', method.getValues());
-    const response = await axios.get('http://localhost:8080/bplte/core/auth/test');
-    console.log('test ::: ', response);
+    await axios
+      .post('http://localhost:8080/bplte/core/auth/join', method.getValues())
+      .catch((e) => {
+        setAlertOpen(true);
+        setAlertMessage('회원가입 중 오류가 발생하였습니다.\n' + e.message);
+      });
   };
 
   return (
     <div>
+      <AlertDialog open={alertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>오류</AlertDialogTitle>
+            <AlertDialogDescription style={{ whiteSpace: 'pre-wrap' }}>
+              {alertMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setAlertOpen(false)}>닫기</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="flex w-full max-w-sm flex-col gap-6" style={{ width: '500px' }}>
         <Logo />
         <Card>
@@ -42,12 +73,24 @@ const Join = () => {
             <form>
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="name">이름</FieldLabel>
+                  <FieldLabel htmlFor="userId">사용자 아이디</FieldLabel>
                   <Input
-                    id="name"
+                    id="userId"
                     type="text"
-                    {...register('name')}
+                    {...register('userId')}
+                    placeholder="john.doe"
+                    maxLength={30}
+                    required
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="userName">이름</FieldLabel>
+                  <Input
+                    id="userName"
+                    type="text"
+                    {...register('userName')}
                     placeholder="John Doe"
+                    maxLength={30}
                     required
                   />
                 </Field>
