@@ -1,5 +1,6 @@
 .logo {
     user-select: none;
+    margin-bottom: 15px;
     span {
         margin-right: 10px;
         font-size: 30px;
