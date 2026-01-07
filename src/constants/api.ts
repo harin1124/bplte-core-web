@@ -1,0 +1,4 @@
+export const RESPONSE = {
+    SUCCESS: 'BPLTE200',
+    BAD_REQUEST: 'BPLTE400',
+}
