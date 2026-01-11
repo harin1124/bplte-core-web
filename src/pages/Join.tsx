@@ -17,12 +17,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { RESPONSE } from '@/constants/api.ts';
 import { useNavigate } from 'react-router-dom';
-
-interface AlertConfig {
-  title: string;
-  description: string;
-  onClose: () => void;
-}
+import type { AlertConfig } from '@/components/custom/Alert.ts';
 
 type JoinFormValue = {
   userId: string;
@@ -46,7 +41,6 @@ const Join = () => {
   const navigate = useNavigate();
   const { register } = method;
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
-
   const [alertConfig, setAlertConfig] = useState<AlertConfig>({
     title: '',
     description: '',

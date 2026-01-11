@@ -3,11 +3,19 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home.tsx';
 import Join from './pages/Join.tsx';
 import Login from '@/pages/Login.tsx';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route 
+        path="/" 
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        } 
+      />
       <Route path="/join" element={<Join />} />
       <Route path="/login" element={<Login />} />
     </Routes>
