@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog.tsx';
-import api from '@/lib/api';
+import coreApi from '@/lib/api';
 import { RESPONSE } from '@/constants/api.ts';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
@@ -46,36 +46,35 @@ const Login = () => {
   });
 
   const onSubmit = async () => {
-    try {
-      const response = await api.post('/auth/login', method.getValues());
-      const data = response.data;
-      
-      if (data.resultCode === RESPONSE.SUCCESS) {
-        // JWT 토큰을 받아서 인증 상태 업데이트
-        const accessToken = data.data; // 백엔드에서 반환하는 토큰
-        login(accessToken);
-        
-        setAlertConfig({
-          title: '성공',
-          description: '로그인에 성공하였습니다.',
-          onClose: () => {
-            setAlertOpen(false);
-            navigate('/'); // 홈페이지로 리다이렉트
-          },
-        });
-        setAlertOpen(true);
-      } else {
-        setAlertConfig({
-          title: '오류',
-          description: '로그인 중 오류가 발생하였습니다.\n' + data.resultMessage,
-          onClose: () => setAlertOpen(false),
-        });
-        setAlertOpen(true);
-      }
-    } catch (error: any) {
+    const response = await coreApi.post('/auth/login', method.getValues());
+    const data = response.data;
+
+    if (data.resultCode === RESPONSE.SUCCESS) {
+      // HttpOnly 쿠키 방식에서는 토큰이 자동으로 쿠키에 설정됨
+      // 서버에서 반환된 사용자 정보를 localStorage에 저장
+      const responseData = data.data;
+
+      // 서버 응답 구조에 따라 사용자 정보 추출
+      const userInfo = {
+        userId: responseData.user?.userId || responseData.userId,
+        userName: responseData.user?.userName || responseData.userName,
+      };
+
+      login(userInfo);
+
+      setAlertConfig({
+        title: '성공',
+        description: '로그인에 성공하였습니다.',
+        onClose: () => {
+          setAlertOpen(false);
+          navigate('/'); // 홈페이지로 리다이렉트
+        },
+      });
+      setAlertOpen(true);
+    } else {
       setAlertConfig({
         title: '오류',
-        description: '로그인 중 오류가 발생하였습니다.\n' + (error.response?.data?.resultMessage || error.message),
+        description: '로그인 중 오류가 발생하였습니다.\n' + data.resultMessage,
         onClose: () => setAlertOpen(false),
       });
       setAlertOpen(true);

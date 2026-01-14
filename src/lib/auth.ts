@@ -1,106 +1,37 @@
 /**
- * JWT 토큰 관리 유틸리티
+ * JWT 토큰 관리 유틸리티 (HttpOnly 쿠키 기반)
  */
 
-const TOKEN_KEY = 'accessToken';
-const USER_KEY = 'user';
-
-export interface User {
+export interface LoginUserInfo {
   userId: string;
-  roles: string[];
+  userName: string;
 }
 
 /**
- * 토큰을 localStorage에 저장
+ * 쿠키에서 특정 값 조회
  */
-export const setToken = (token: string): void => {
-  localStorage.setItem(TOKEN_KEY, token);
+const getCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift() || null;
+  }
+  return null;
 };
 
 /**
- * localStorage에서 토큰 조회
- */
-export const getToken = (): string | null => {
-  return localStorage.getItem(TOKEN_KEY);
-};
-
-/**
- * 토큰 삭제 (로그아웃)
+ * 토큰 삭제는 서버의 /auth/logout API를 호출해야 함
  */
 export const removeToken = (): void => {
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(USER_KEY);
-};
-
-/**
- * JWT 토큰에서 페이로드 추출
- */
-export const decodeToken = (token: string): any => {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      window
-        .atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
-  } catch (error) {
-    console.error('토큰 디코딩 실패:', error);
-    return null;
-  }
-};
-
-/**
- * 토큰이 만료되었는지 확인
- */
-export const isTokenExpired = (token: string): boolean => {
-  const decoded = decodeToken(token);
-  if (!decoded || !decoded.exp) {
-    return true;
-  }
-  
-  const currentTime = Date.now() / 1000;
-  return decoded.exp < currentTime;
+  // HttpOnly 쿠키는 JavaScript에서 삭제할 수 없음
+  // 실제 로그아웃은 서버 API를 통해 처리됨
+  console.warn('HttpOnly 쿠키는 서버 API(/auth/logout)를 통해 삭제해야 합니다.');
 };
 
 /**
  * 현재 사용자가 인증되어 있는지 확인
+ * HttpOnly 쿠키 존재 여부로 판단 (사용자 정보는 authStore에서 관리)
  */
 export const isAuthenticated = (): boolean => {
-  const token = getToken();
-  if (!token) {
-    return false;
-  }
-  
-  return !isTokenExpired(token);
-};
-
-/**
- * 토큰에서 사용자 정보 추출
- */
-export const getUserFromToken = (token: string): User | null => {
-  const decoded = decodeToken(token);
-  if (!decoded) {
-    return null;
-  }
-  
-  return {
-    userId: decoded.sub,
-    roles: decoded.roles || [],
-  };
-};
-
-/**
- * 현재 로그인된 사용자 정보 조회
- */
-export const getCurrentUser = (): User | null => {
-  const token = getToken();
-  if (!token || isTokenExpired(token)) {
-    return null;
-  }
-  
-  return getUserFromToken(token);
+  return getCookie('accessToken') !== null;
 };

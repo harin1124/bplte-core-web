@@ -1,16 +1,28 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { getToken, getCurrentUser, setToken, removeToken, isAuthenticated } from '@/lib/auth';
-import type { User } from '@/lib/auth';
+import { removeToken } from '@/lib/auth';
+import type { LoginUserInfo } from '@/lib/auth';
+
+/**
+ * 쿠키에서 특정 값 조회
+ */
+const getCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift() || null;
+  }
+  return null;
+};
 
 interface AuthState {
-  user: User | null;
+  user: LoginUserInfo | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
 
 interface AuthActions {
-  login: (token: string) => void;
+  login: (userInfo: LoginUserInfo) => void;
   logout: () => void;
   initialize: () => void;
   setLoading: (loading: boolean) => void;
@@ -27,11 +39,10 @@ export const useAuthStore = create<AuthStore>()(
       isLoading: true,
 
       // 액션들
-      login: (token: string) => {
-        setToken(token);
-        const currentUser = getCurrentUser();
+      login: (userInfo: LoginUserInfo) => {
+        // Zustand persist가 자동으로 localStorage에 저장
         set({
-          user: currentUser,
+          user: userInfo,
           isAuthenticated: true,
           isLoading: false,
         });
@@ -48,17 +59,21 @@ export const useAuthStore = create<AuthStore>()(
 
       initialize: () => {
         set({ isLoading: true });
+
+        // Zustand persist에서 복원된 상태 확인
+        const state = useAuthStore.getState();
         
-        const token = getToken();
-        if (token && isAuthenticated()) {
-          const currentUser = getCurrentUser();
+        // 쿠키 존재 여부와 저장된 사용자 정보로 인증 상태 확인
+        const hasCookie = getCookie('accessToken') !== null;
+        const hasUserInfo = state.user !== null;
+        
+        if (hasCookie && hasUserInfo) {
           set({
-            user: currentUser,
             isAuthenticated: true,
             isLoading: false,
           });
         } else {
-          // 만료된 토큰 제거
+          // 인증 정보 제거
           removeToken();
           set({
             user: null,
@@ -75,11 +90,12 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: 'auth-storage', // localStorage 키
       partialize: (state) => ({
-        // persist할 상태만 선택 (토큰은 auth.ts에서 별도 관리)
+        // persist할 상태 선택 (사용자 정보도 함께 저장)
         isAuthenticated: state.isAuthenticated,
+        user: state.user, // 사용자 정보도 auth-storage에 포함
       }),
-    }
-  )
+    },
+  ),
 );
 
 // 앱 초기화 시 인증 상태 복원
