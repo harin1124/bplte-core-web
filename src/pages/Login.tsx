@@ -118,7 +118,17 @@ const Login = () => {
                   </Field>
                   <Field>
                     <FieldLabel htmlFor="password">비밀번호</FieldLabel>
-                    <Input id="password" type="password" {...register('password')} required />
+                    <Input
+                      id="password"
+                      type="password"
+                      {...register('password')}
+                      required
+                      onKeyUp={(e) => {
+                        if (e.key === 'Enter') {
+                          void onSubmit();
+                        }
+                      }}
+                    />
                   </Field>
                   <Field>
                     <Button type="button" onClick={onSubmit}>
