@@ -22,19 +22,17 @@ coreApi.interceptors.request.use(
   },
 );
 
-// 응답 인터셉터: 401 에러 시 자동 로그아웃
+// 응답 인터셉터: 401 에러 처리
 coreApi.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    // 401 Unauthorized 응답 시 토큰 제거 및 로그인 페이지로 리다이렉트
+    // 401 Unauthorized 응답 시 토큰 제거
     if (error.response?.status === 401) {
       removeToken();
-      // 현재 페이지가 로그인 페이지가 아닌 경우에만 리다이렉트
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
-      }
+      // 로그인 페이지로 리다이렉트하지 않고 에러를 그대로 전달하여
+      // 각 컴포넌트에서 Alert 등으로 처리할 수 있도록 함
     }
 
     return Promise.reject(error);

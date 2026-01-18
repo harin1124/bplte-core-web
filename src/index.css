@@ -221,13 +221,13 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* 텍스트 선택 시 색상 커스터마이징 */
   ::selection {
     background-color: var(--primary);
     color: var(--primary-foreground);
   }
-  
+
   ::-moz-selection {
     background-color: var(--primary);
     color: var(--primary-foreground);

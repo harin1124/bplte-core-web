@@ -62,11 +62,11 @@ export const useAuthStore = create<AuthStore>()(
 
         // Zustand persist에서 복원된 상태 확인
         const state = useAuthStore.getState();
-        
+
         // 쿠키 존재 여부와 저장된 사용자 정보로 인증 상태 확인
         const hasCookie = getCookie('accessToken') !== null;
         const hasUserInfo = state.user !== null;
-        
+
         if (hasCookie && hasUserInfo) {
           set({
             isAuthenticated: true,
@@ -98,8 +98,17 @@ export const useAuthStore = create<AuthStore>()(
   ),
 );
 
+// 초기화 실행 여부 플래그
+let isInitialized = false;
+
 // 앱 초기화 시 인증 상태 복원
 export const initializeAuth = () => {
+  if (isInitialized) {
+    console.log('Auth already initialized, skipping...');
+    return;
+  }
+
+  isInitialized = true;
   const { initialize } = useAuthStore.getState();
   initialize();
 };
