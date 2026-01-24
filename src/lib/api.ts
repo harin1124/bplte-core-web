@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { removeToken } from '@/lib/auth';
+import { useAuthStore } from '@/stores/authStore';
 
 // Axios 인스턴스 생성
 const coreApi = axios.create({
@@ -28,11 +28,9 @@ coreApi.interceptors.response.use(
     return response;
   },
   (error) => {
-    // 401 Unauthorized 응답 시 토큰 제거
+    // 401 Unauthorized 응답 시 인증 제거
     if (error.response?.status === 401) {
-      removeToken();
-      // 로그인 페이지로 리다이렉트하지 않고 에러를 그대로 전달하여
-      // 각 컴포넌트에서 Alert 등으로 처리할 수 있도록 함
+      useAuthStore.getState().logout();
     }
 
     return Promise.reject(error);

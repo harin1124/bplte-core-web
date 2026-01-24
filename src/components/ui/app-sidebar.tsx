@@ -14,7 +14,7 @@ import NavUser from '@/pages/Layout/NavUser.tsx';
 const items = [
   {
     title: '홈',
-    url: '',
+    url: '/',
     icon: Home,
   },
   {

@@ -1,19 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { removeToken } from '@/lib/auth';
 import type { LoginUserInfo } from '@/lib/auth';
-
-/**
- * 쿠키에서 특정 값 조회
- */
-const getCookie = (name: string): string | null => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop()?.split(';').shift() || null;
-  }
-  return null;
-};
 
 interface AuthState {
   user: LoginUserInfo | null;
@@ -49,7 +36,6 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       logout: () => {
-        removeToken();
         set({
           user: null,
           isAuthenticated: false,
@@ -64,17 +50,14 @@ export const useAuthStore = create<AuthStore>()(
         const state = useAuthStore.getState();
 
         // 쿠키 존재 여부와 저장된 사용자 정보로 인증 상태 확인
-        const hasCookie = getCookie('accessToken') !== null;
         const hasUserInfo = state.user !== null;
 
-        if (hasCookie && hasUserInfo) {
+        if (hasUserInfo) {
           set({
             isAuthenticated: true,
             isLoading: false,
           });
         } else {
-          // 인증 정보 제거
-          removeToken();
           set({
             user: null,
             isAuthenticated: false,

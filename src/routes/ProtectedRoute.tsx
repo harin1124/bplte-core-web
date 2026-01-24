@@ -1,17 +1,14 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/stores/authStore';
-
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore.ts';
+import { SidebarProvider } from '@/components/ui/sidebar.tsx';
+import AppSidebar from '@/components/ui/app-sidebar.tsx';
 
 /**
  * 보호된 라우트 컴포넌트
  * 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
  * 권한이 없는 사용자는 접근 거부
  */
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+export const ProtectedRoute = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isLoading = useAuthStore((state) => state.isLoading);
   const location = useLocation();
@@ -30,7 +27,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <>{children}</>;
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <Outlet />
+    </SidebarProvider>
+  );
 };
-
-export default ProtectedRoute;
