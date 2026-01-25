@@ -85,13 +85,23 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
           <AlertDialogFooter>
             {isConfirmMode ? (
               <>
-                <AlertDialogCancel onClick={handleClose}>{BUTTON.CANCEL}</AlertDialogCancel>
-                <AlertDialogAction ref={actionButtonRef} onClick={handleOk}>
+                <AlertDialogCancel className={'cursor-pointer'} onClick={handleClose}>
+                  {BUTTON.CANCEL}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  ref={actionButtonRef}
+                  className={'cursor-pointer'}
+                  onClick={handleOk}
+                >
                   {BUTTON.OK}
                 </AlertDialogAction>
               </>
             ) : (
-              <AlertDialogAction ref={actionButtonRef} onClick={handleClose}>
+              <AlertDialogAction
+                ref={actionButtonRef}
+                className={'cursor-pointer'}
+                onClick={handleClose}
+              >
                 {BUTTON.CLOSE}
               </AlertDialogAction>
             )}
