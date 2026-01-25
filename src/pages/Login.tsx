@@ -1,6 +1,6 @@
 import Logo from '@/pages/Logo.tsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field.tsx';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { useForm } from 'react-hook-form';
@@ -96,6 +96,9 @@ const Login = () => {
                     }}
                   />
                 </Field>
+                <FieldDescription className="text-center">
+                  회원이 아니신가요? <a href="/join">회원가입</a>
+                </FieldDescription>
                 <Field>
                   <Button type="button" onClick={onSubmit}>
                     로그인
