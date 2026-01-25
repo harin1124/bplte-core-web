@@ -1,5 +1,3 @@
-'use client';
-
 import { LogOut, User } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
 import {
@@ -7,7 +5,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar.tsx';
@@ -27,7 +24,7 @@ const NavUser = () => {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={'https://github.com/shadcn.png'} alt={user?.userId} />
@@ -44,28 +41,21 @@ const NavUser = () => {
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={'https://github.com/shadcn.png'} alt={user?.userId} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user?.userName}</span>
-                  <span className="text-muted-foreground truncate text-xs">{user?.userId}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => showAlert({ description: '기능 개발 중입니다.' })}>
+              <DropdownMenuItem
+                style={{ cursor: 'pointer' }}
+                onClick={() => showAlert({ description: '기능 개발 중입니다.' })}
+              >
                 <User />
                 사용자 정보
               </DropdownMenuItem>
               <DropdownMenuItem
+                style={{ cursor: 'pointer' }}
                 onClick={() =>
                   showAlert({
                     description: '로그아웃 하시겠습니까?',
-                    onClose: () => {
+                    autoClose: true,
+                    onConfirm: () => {
                       logout();
                       navigate('/login');
                     },
