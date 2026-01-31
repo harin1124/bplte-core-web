@@ -9,6 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { useNavigate } from 'react-router-dom';
 
 type Post = {
   postNumber: number;
@@ -23,7 +25,7 @@ type Post = {
 const columns: ColumnDef<Post>[] = [
   {
     accessorKey: 'postNumber',
-    header: '번호',
+    header: '글 번호',
   },
   {
     accessorKey: 'title',
@@ -36,6 +38,7 @@ const columns: ColumnDef<Post>[] = [
 ];
 
 const PostList = () => {
+  const navigator = useNavigate();
   const [postList, setPostList] = useState<Post[]>([]);
 
   const table = useReactTable({
@@ -53,8 +56,18 @@ const PostList = () => {
   };
   return (
     <div style={{ width: '100%' }}>
+      <div className="flex justify-end mb-5">
+        <Button size="sm" variant={'default'} onClick={() => navigator('/post/create')}>
+          등록
+        </Button>
+      </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
+          <colgroup>
+            <col width={'100px'} />
+            <col width={'auto'} />
+            <col width={'150px'} />
+          </colgroup>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -73,7 +86,11 @@ const PostList = () => {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  onClick={(i) => console.log('item ::: ', i)}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} align={'left'}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

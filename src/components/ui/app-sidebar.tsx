@@ -19,7 +19,7 @@ const items = [
   },
   {
     title: '게시판',
-    url: '/postList',
+    url: '/post/list',
     icon: ClipboardList,
   },
 ];

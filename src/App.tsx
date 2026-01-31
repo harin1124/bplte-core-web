@@ -5,8 +5,9 @@ import Login from '@/pages/Login.tsx';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { PublicRoute } from '@/routes/PublicRoute.tsx';
 import { ProtectedRoute } from '@/routes/ProtectedRoute.tsx';
-import PostList from '@/pages/PostList.tsx';
+import PostList from '@/pages/post/PostList.tsx';
 import Home from '@/pages/Home.tsx';
+import PostCreate from '@/pages/post/PostCreate.tsx';
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
-            <Route path="/postList" element={<PostList />} />
+            <Route path="/post/list" element={<PostList />} />
+            <Route path="/post/create" element={<PostCreate />} />
           </Route>
         </Routes>
       </BrowserRouter>
