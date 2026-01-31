@@ -48,12 +48,14 @@ const Login = () => {
       login(userInfo);
 
       showAlert({
+        type: 'alert',
         title: ALERT.TITLE.SUCCESS,
         description: '로그인에 성공하였습니다.',
         onClose: () => navigate('/'),
       });
     } else {
       showAlert({
+        type: 'alert',
         title: ALERT.TITLE.ERROR,
         description: '로그인 중 오류가 발생하였습니다.\n' + data.resultMessage,
       });

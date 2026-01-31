@@ -107,12 +107,14 @@ const Join = () => {
         const data = res.data;
         if (data.resultCode === RESPONSE.SUCCESS && data.data === 1) {
           showAlert({
+            type: 'alert',
             title: ALERT.TITLE.SUCCESS,
             description: '회원가입에 성공하였습니다.',
             onClose: () => navigate('/login'),
           });
         } else {
           showAlert({
+            type: 'alert',
             title: ALERT.TITLE.ERROR,
             description: '회원가입 중 오류가 발생하였습니다.\n' + data.resultMessage,
           });
@@ -120,6 +122,7 @@ const Join = () => {
       })
       .catch((e) => {
         showAlert({
+          type: 'alert',
           title: ALERT.TITLE.ERROR,
           description: '회원가입 중 오류가 발생하였습니다.\n' + e.message,
         });
