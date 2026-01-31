@@ -21,6 +21,7 @@ interface AlertProviderProps {
 export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [alertConfig, setAlertConfig] = useState<AlertConfig>({
+    type: 'alert',
     description: '',
   });
 
@@ -33,15 +34,15 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
       title: config.title || '확인',
       onClose: config.onClose
         ? () => {
-            hideAlert(); // 항상 먼저 Alert를 닫고
+            hide(); // 항상 먼저 Alert를 닫고
             config.onClose?.(); // 사용자 정의 onClose 실행
           }
-        : hideAlert,
+        : hide,
     });
     setAlertOpen(true);
   };
 
-  const hideAlert = () => {
+  const hide = () => {
     setAlertOpen(false);
   };
 
@@ -65,14 +66,12 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   const handleOk = () => {
     if (alertConfig.onConfirm) {
       alertConfig.onConfirm();
+      hide();
     }
   };
 
-  // Confirm 모드인지 확인 (onConfirm가 있으면 Confirm 모드)
-  const isConfirmMode = !!alertConfig.onConfirm;
-
   return (
-    <AlertContext.Provider value={{ showAlert, hideAlert }}>
+    <AlertContext.Provider value={{ showAlert, hide }}>
       {children}
       <AlertDialog open={alertOpen}>
         <AlertDialogContent>
@@ -83,7 +82,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            {isConfirmMode ? (
+            {alertConfig.type === 'confirm' ? (
               <>
                 <AlertDialogCancel className={'cursor-pointer'} onClick={handleClose}>
                   {BUTTON.CANCEL}
