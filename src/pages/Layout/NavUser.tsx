@@ -44,7 +44,7 @@ const NavUser = () => {
             <DropdownMenuGroup>
               <DropdownMenuItem
                 style={{ cursor: 'pointer' }}
-                onClick={() => showAlert({ description: '기능 개발 중입니다.' })}
+                onClick={() => showAlert({ type: 'alert', description: '기능 개발 중입니다.' })}
               >
                 <User />
                 사용자 정보
@@ -53,8 +53,8 @@ const NavUser = () => {
                 style={{ cursor: 'pointer' }}
                 onClick={() =>
                   showAlert({
+                    type: 'confirm',
                     description: '로그아웃 하시겠습니까?',
-                    autoClose: true,
                     onConfirm: () => {
                       logout();
                       navigate('/login');

@@ -101,7 +101,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
                 className={'cursor-pointer'}
                 onClick={handleClose}
               >
-                {BUTTON.CLOSE}
+                {BUTTON.OK}
               </AlertDialogAction>
             )}
           </AlertDialogFooter>
