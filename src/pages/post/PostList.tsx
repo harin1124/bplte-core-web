@@ -18,8 +18,10 @@ type Post = {
   title: string;
   regDt: string;
   rgtrId: string;
+  rgtrInfo: string;
   mdfcnDt: string;
   mdfrId: string;
+  mdfrInfo: string;
 };
 
 const columns: ColumnDef<Post>[] = [
@@ -32,7 +34,7 @@ const columns: ColumnDef<Post>[] = [
     header: '제목',
   },
   {
-    accessorKey: 'ownerUserId',
+    accessorKey: 'rgtrInfo',
     header: '등록자',
   },
 ];
