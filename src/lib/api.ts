@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/authStore';
 
 // Axios 인스턴스 생성
 const coreApi = axios.create({
-  baseURL: 'http://localhost:8080/bplte/core',
+  baseURL: 'http://localhost:8081/bplte/core',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -11,10 +11,16 @@ const coreApi = axios.create({
   withCredentials: true, // 쿠키 자동 포함
 });
 
-// 요청 인터셉터: 쿠키는 자동으로 포함되므로 토큰 헤더 추가 불필요
+// 요청 인터셉터: 쿠키 자동 포함 + FormData 시 boundary를 위해 JSON Content-Type 제거
 coreApi.interceptors.request.use(
   (config) => {
-    // withCredentials: true로 설정했으므로 쿠키가 자동으로 포함됨
+    if (config.data instanceof FormData && config.headers) {
+      if (typeof config.headers.delete === 'function') {
+        config.headers.delete('Content-Type');
+      } else {
+        delete (config.headers as Record<string, unknown>)['Content-Type'];
+      }
+    }
     return config;
   },
   (error) => {
