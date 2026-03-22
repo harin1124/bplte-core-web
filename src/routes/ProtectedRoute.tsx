@@ -2,6 +2,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore.ts';
 import { SidebarProvider } from '@/components/ui/sidebar.tsx';
 import AppSidebar from '@/components/ui/app-sidebar.tsx';
+import { Toaster } from 'sonner';
 
 /**
  * 보호된 라우트 컴포넌트
@@ -30,6 +31,7 @@ export const ProtectedRoute = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
+      <Toaster style={{ textAlign: 'left' }} />
       <Outlet />
     </SidebarProvider>
   );
